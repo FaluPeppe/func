@@ -99,3 +99,41 @@ ladda_ned_fil <- function(output_mapp, fil_url) {
     file.remove(paste0(output_mapp, fil_namn))
   }
 }
+
+
+# download and unzip shapefiles from www unless done previously
+get_shapefile <- function(path){
+  file_name = str_extract(url_shp, "[^/]+(?=\\.zip$)")
+  file_name_full = paste0(file_name, ".zip")
+  
+  if(!file.exists(paste0(folder_shapefile, "/", file_name_full))){
+    file_name = str_extract(url_shp, "[^/]+(?=\\.zip$)")
+    file_name_full = paste0(file_name, ".zip")
+    download.file(url_shp, destfile = paste0(folder_shapefile, "/", file_name_full))
+    fname = unzip(paste0(folder_shapefile, "/", file_name_full), list=TRUE)$Name[1:5]
+    unzip(paste0(folder_shapefile, "/", file_name_full), 
+          exdir=folder_shapefile, 
+          overwrite=TRUE)
+  }
+  file_name <<- file_name
+}
+
+
+
+# function to get date for eg next monday (monday = 2) 
+nextweekday <- function(date, wday) {
+  date <- as.Date(date)
+  diff <- wday - wday(date)
+  if( diff < 1 ) # if 0 and today is monday then result will be today which leads to that departure time lies in past
+    diff <- diff + 7
+  return(date + diff)
+}
+
+
+# function to identify those not present
+`%notin%` <- Negate(`%in%`)
+
+
+
+
+
