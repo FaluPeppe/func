@@ -1,0 +1,62 @@
+---
+title: "Funktioner i mappen g:/skript/func/"
+author: "Regionala utvecklingsförvaltningen"
+date: '2022-01-24'
+output: 
+  html_document:
+    toc: true
+    toc_float:
+      collapsed: true
+      smooth_scroll: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Inledning
+
+Här beskrivs de funktionsfiler som ligger i mappen [g:/skript/func/)](file:///g:/skript/func) och som kan utvecklas och användas av de som arbetar med R på Region Dalarna. Syftet med funktionerna är att underlätta användningen av steg som används ofta, dvs. att inte var och en ska skriva koden själva utan kunna använda kod som någon annan redan har skrivit för att lösa samma problem. Funktionerna listas under den fil i vilken den är sparad, i de flesta func-filer finns flera funktioner. 
+
+# func_API.R
+
+Funktionerna i denna fil är främst skrivna för användning i samband med nedladdning av data med (främst) SCB:s API.  
+
+## hamtaregtab()  
+Används för att hämta regioner och kommuner med både läns-/kommunkod samt benämning. Man skickar inte med någon parameter utan tilldelar en variabel returvärdet som är en fullständig lista över regioner och kommuner.  
+
+### Exempel
+```{r hamtaregtag, echo=TRUE, warning=FALSE, message=FALSE}
+source("G:/skript/func/func_API.R", encoding = "utf-8", echo = FALSE)
+regioner <- hamtaregtab()
+head(regioner)
+```
+  
+## hamtakommuner()
+
+Används för att hämta alla kommuner i ett län. Det går att få med länet och/eller riket också.  
+
+### Parametrar  
+
+Följande parametrar finns i funktionen (standardinställning i kursivt):
+
+* **lan** *= "20"*  
+Man kan bara skicka med ett värde och inte en vektor med flera värden. Länskoden skickas som text. Datatyp: *character*   
+
+* **tamedlan** *= TRUE*  
+Sätts till **TRUE** om man vill ha med länskoden i vektorn som returneras. Datatyp: *logical*  
+
+* **tamedriket** *= TRUE*  
+Sätts till **TRUE** om man vill ha med kod för riket i vektorn som returneras Datatyp: *logical*  
+
+* **allakommuner** *= FALSE*  
+Sätts till **TRUE** om man vill ha samtliga kommuner i den returnerade vektorn. I detta fall spelar inte länskoden någon roll. Datatyp: *logical*
+
+* **Returtyp:** *character vektor*. Det är bara koderna som kommer med. Vill man också ha med kommun- och länsnamn så används med fördel funktionen *hamtaregion_kod_namn()* nedan.  
+
+### Exempel  
+```{r hamtakommuner, echo=TRUE, warning=FALSE, message=FALSE}
+source("G:/skript/func/func_API.R", encoding = "utf-8", echo = FALSE)
+kommuner <- hamtakommuner("20")
+kommuner
+```

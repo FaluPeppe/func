@@ -31,38 +31,38 @@ SkapaStapelDiagram <- function(skickad_df,
                                berakna_index = FALSE,
                                diagram_facet = FALSE,
                                facet_grp = NA,
-                               facet_scale = "free",
-                               facet_legend_bottom = FALSE,
-                               manual_color = NA,
-                               brew_palett = "Greens",
-                               utan_diagramtitel = FALSE,
-                               manual_y_axis_title = NA,
-                               manual_x_axis_title = NA,
-                               manual_x_axis_text_vjust = 0,
-                               manual_x_axis_text_hjust = 0.5, 
-                               x_axis_lutning = 45,
-                               x_axis_storlek = 10.5,
-                               x_axis_sort_value = FALSE,     # för att sortera x-axelns etiketter efter värdet i y-variablen
-                               x_var_fokus = NA,              # om färgerna på grupperna ska styras av en särskild variabel anges den här, ex. "fokus" om det finns en kolumn som heter fokus och som innehåller ett antal unika värden (OBS! Då måste färgskalan innehålla minst lika många olika färger)
-                               y_axis_100proc = FALSE,        # sätt till TRUE om y-axeln ska vara mellan 0 och 100
-                               y_axis_borjar_pa_noll = TRUE,  # sätt till FALSE om y-axeln ska börja på annat värde än 0
+                               facet_scale = "free",              # här finns möjlighet att styra skalan på facet_diagram, default är "free", alla får olika skalor, men kan sättas till "fixed" för att ha samma skala på alla facet-diagram
+                               facet_legend_bottom = FALSE,       # TRUE tvingar in en teckenförklaring längst ned i diagrammet
+                               manual_color = NA,                 # man kan lägga till en färgpalett som skickas som vektor med hexkoder, går före brew_palett
+                               brew_palett = "Greens",            # defaultpalett är Greens i Rcolorbrewer men byts ut om det finns manual color
+                               utan_diagramtitel = FALSE,         # visar ingen diagramtitel vid TRUE, om vi vill stänga av diagramtitel
+                               manual_y_axis_title = NA,          # man kan skicka med en text som blir y-axelns titel, annars används variabelnamnet, om den sätts till "procent" så läggs % på efter värdet
+                               manual_x_axis_title = NA,          # man kan skicka med en text som blir x-axelns titel
+                               manual_x_axis_text_vjust = 0,      # justering av x-axelns etiketter, är lite snårig men kan sättas till 1 här och för hjust, brukar kunna funka hyfsat
+                               manual_x_axis_text_hjust = 0.5,    # justering av x-axelns etiketter, är lite snårig men kan sättas till 1 här och för vjust, brukar kunna funka hyfsat
+                               x_axis_lutning = 45,               # styr om etiketterna på x-axeln ska luta åt något håll, default är 45 graders lutning, men 0 brukar kunna vara bra också
+                               x_axis_storlek = 10.5,             # styr storleken på x-axelns etiketter
+                               y_axis_storlek = 12,               # styr storleken på y-axelns etiketter
+                               x_axis_sort_value = FALSE,         # för att sortera x-axelns etiketter efter värdet i y-variablen
+                               x_var_fokus = NA,                  # lägg fokus på någon kategori i den variabel 
+                               y_axis_100proc = FALSE,            # om man har ett diagram med procentvärden och vill visa hela skalan upp till 100 %, och inte sluta på en lägre procentsats kör man TRUE
+                               y_axis_borjar_pa_noll = TRUE,      # man kan stänga av att diagrammet börjar på noll om man sätter detta till TRUE, då blir minvärdet högre än 0, annars börjar det alltid på 0
                                procent_0_100_10intervaller = FALSE,  # om TRUE, så går y-axeln mellan 0 och 100, med tjocka stödlinjer med 10 enheters mellanrum, passar bra med procent 
-                               y_axis_storlek = 12,
-                               dataetikett_noll_visa_ej = FALSE,     # om TRUE, skrivs inga dataetiketter för nollvärden
-                               legend_titel = NA,             # textsträng. Sätt en titel på teckenförklaringen. Om NA, så skriver den ut teckenförklaring utan titel
-                               legend_tabort = FALSE,         # TRUE om man vill ta bort legenden oavsett andra inställningar
-                               diagram_liggande = FALSE,      # TRUE/FALSE. TRUE för att skriva ut liggande diagram, annars blir det stående
-                               geom_position_stack = FALSE,   # om man vill ha ett stacked bar chart och inte dodge (=grupper i samma stapel och inte bredvid varandra)
-                               AF_special = FALSE,            # en speciallösning för arbetslöshetsdiagram från AF. 
-                               lagg_pa_logga = TRUE,          # TRUE/FALSE. Sätt till FALSE om man inte vill ha med logga
-                               logga_path = NA,               # textsträng. En giltig sökväg med filnamn till den bildfil som innehåller den logga man vill lägga med i diagrammet
-                               logo_scale = 15,               # för att styra storlek på logga om man har med en sån, mindre tal = större logga
-                               dataetiketter = FALSE,
-                               skriv_till_diagramfil = TRUE,
-                               diagramfil_hojd = 7,
-                               diagramfil_bredd = 12,
-                               filnamn_diagram){
-  
+                               dataetikett_noll_visa_ej = FALSE,  # om TRUE, skrivs inga dataetiketter för nollvärden
+                               legend_titel = NA,                 # om man vill ha en titel på teckenförklaringen kan man skicka med det som text här
+                               legend_tabort = FALSE,            # om man vill tvinga bort legenden så kan man göra det här med TRUE
+                               diagram_liggande = FALSE,          # sätt till TRUE om man vill vrida diagrammet och få det liggande
+                               geom_position_stack = FALSE,       # om man vill ha ett stacked bar chart och inte dodge (=grupper i samma stapel och inte bredvid varandra)
+                               AF_special = FALSE,                # speciallösning för diagram för AF-data, inget att bry sig om
+                               lagg_pa_logga = TRUE,              # TRUE om man vill lägga på en logga, kräver en logga_path
+                               logga_path = NA,                   # sökväg till var det finns en logga att lägga till i diagrammet
+                               logga_scaling = 15,                # ett sätt att bestämma storlek på loggan i relation till diagrammet, lägre tal = större logga
+                               dataetiketter = FALSE,             # rita ut dataetiketter 
+                               skriv_till_diagramfil = TRUE,      # om TRUE så skrivs diagrammet till en fil (om det finns output_path och filnamn)
+                               diagramfil_hojd = 7,               # om ett diagram skrivs till fil kan proportionerna ändras här i filens upplösning, OBS! påverkar även textstorlekar etc. 
+                               diagramfil_bredd = 12,             # man kan påverka både storlek på diagrammet och proportionen mellan bredd och höjd
+                               filnamn_diagram){                  # filnamn som diagrammet sparas som, bara filnamn med filändlse, sökvägen skickas med i output_mapp ovan
+
   # Här skapas variabler som används av de som skickats till funktionen
   x_var <- as.name(skickad_x_var)
   if (!is.na(skickad_x_grupp)) x_grupp <- as.name(skickad_x_grupp) else x_grupp <- NA
@@ -195,9 +195,9 @@ SkapaStapelDiagram <- function(skickad_df,
     p <- plot_df %>% 
       ggplot(aes(x=!!x_var, y=total, fill = chart_col))
   } else {
-    p <- plot_df %>% 
-      ggplot(aes(x=!!x_var, y=total, fill = as.factor(!!x_grupp)))
-    if (!diagram_facet | facet_legend_bottom) legend_pos <- "bottom" else legend_pos <- "none"
+    p <- plot_df %>% ggplot(aes(x=!!x_var, y=total, fill = as.factor(!!x_grupp)))
+    if (!diagram_facet | facet_legend_bottom) legend_pos <- "bottom" else legend_pos <- "none"        # lite oklart här om det ska vara or eller and i första if-satsen
+    if (legend_tabort) legend_pos <- "none"
   }
   # en möjlighet att ta bort legenden oavsett andra val
   if (legend_tabort) legend_pos <- "none"
@@ -306,7 +306,8 @@ SkapaStapelDiagram <- function(skickad_df,
         logo_path = logga_path, # url or local file for the logo
         logo_position = "bottom right", # choose a corner
         # 'top left', 'top right', 'bottom left' or 'bottom right'
-        logo_scale = logo_scale,
+        logo_scale = logga_scaling,
+
         #10 as default, but can change to manually make logo bigger (lägre tal = större logga)
         replace = TRUE
       )

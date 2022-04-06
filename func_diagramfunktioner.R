@@ -106,6 +106,9 @@ diagramfarger <- function(farg = "gron_sex"){
   
   # ==================================== grön färgskalor ================================================
   
+  gron_tva_fokus <- c(rgb(112,173,71, maxColorValue = 255),
+                      rgb(55,86,35, maxColorValue = 255))
+                      #rgb(0,0,0, maxColorValue = 255))    # svart
   
   gron_tva_fokus <- c(rgb(112,173,71, maxColorValue = 255),
                       #rgb(55,86,35, maxColorValue = 255),
